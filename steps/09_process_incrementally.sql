@@ -5,7 +5,7 @@ Author:       Jeremiah Hansen
 Last Updated: 1/9/2023
 -----------------------------------------------------------------------------*/
 
-USE ROLE HOL_ROLE;
+USE ROLE ACCOUNTADMIN;
 USE WAREHOUSE HOL_WH;
 USE DATABASE HOL_DB;
 
@@ -18,6 +18,7 @@ USE SCHEMA RAW_POS;
 
 ALTER WAREHOUSE HOL_WH SET WAREHOUSE_SIZE = XLARGE WAIT_FOR_COMPLETION = TRUE;
 
+
 COPY INTO ORDER_HEADER
 FROM @external.frostbyte_raw_stage/pos/order_header/year=2022
 FILE_FORMAT = (FORMAT_NAME = EXTERNAL.PARQUET_FORMAT)
@@ -29,7 +30,7 @@ FILE_FORMAT = (FORMAT_NAME = EXTERNAL.PARQUET_FORMAT)
 MATCH_BY_COLUMN_NAME = CASE_SENSITIVE;
 
 -- See how many new records are in the stream (this may be a bit slow)
---SELECT COUNT(*) FROM HARMONIZED.POS_FLATTENED_V_STREAM;
+SELECT COUNT(*) FROM HARMONIZED.POS_FLATTENED_V_STREAM;
 
 ALTER WAREHOUSE HOL_WH SET WAREHOUSE_SIZE = XSMALL;
 
@@ -39,6 +40,8 @@ ALTER WAREHOUSE HOL_WH SET WAREHOUSE_SIZE = XSMALL;
 -- ----------------------------------------------------------------------------
 
 USE SCHEMA HARMONIZED;
+
+show streams;
 
 EXECUTE TASK ORDERS_UPDATE_TASK;
 
